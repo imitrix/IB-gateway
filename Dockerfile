@@ -32,7 +32,7 @@ RUN pip install ib_insync \
 	&& pip install psutil \
 	&& apt-get remove -y git
   
-WORKDIR /
+WORKDIR /root/
 
 ENV DISPLAY :0
 
@@ -46,7 +46,7 @@ EXPOSE 4001
 COPY ./ib/jts.ini /root/Jts/jts.ini
 COPY scripts/runscript.sh .
 COPY scripts /root/scripts
-
+RUN mkdir /opt/ibc/logs
 
 RUN chmod -R u+x runscript.sh \
   && chmod -R 777 /usr/bin/xvfb-daemon-run \

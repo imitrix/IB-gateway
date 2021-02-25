@@ -8,8 +8,17 @@
 * All credits to the respective contributor(s). 
 
 ### Versions:
-* TWS Gateway: v974.4g
-* IB Controller: v3.2.0
+* IBGateway: 981
+* IBC : v3.8.5
+
+### modifications 2
+replaced source to official server IB (amazon) gateway v981-latest
+based on ubuntu 20.10
+IBC from original source instead of IBController
+no secrets in files, copy stuff,etc. inis kept original and the IBC method of ib_insync is used instead to launch and provide password. 
+I have multiple accounts+paper, each script logs into its own IB account.
+no other dependencies, can be deployed on barebone ubuntu anywhere hosted
+
 
 ### Modifications:
 * Script refactoring

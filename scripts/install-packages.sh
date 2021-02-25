@@ -1,4 +1,6 @@
 #!/bin/bash
+# apt install docker.io
+# systemctl enable --now docker
 
 # Bash "strict mode", to help catch problems and bugs in the shell See
 # http://redsymbol.net/articles/unofficial-bash-strict-mode/
@@ -14,7 +16,7 @@ apt-get update
 apt-get -y upgrade
 
 # Install packages without unnecessary recommended packages:
-apt-get install -y --no-install-recommends wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common dos2unix
+apt-get install -y --no-install-recommends wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common dos2unix python3-pip
 
 # Delete cached files we don't need anymore:
 apt-get clean

@@ -44,9 +44,9 @@ ADD ./vnc/xvfb-daemon-run /usr/bin/xvfb-daemon-run
 EXPOSE 4001
 
 COPY ./ib/jts.ini /root/Jts/jts.ini
-COPY scripts/runscript.sh .
+COPY scripts/runscript.sh /root/
 COPY scripts /root/scripts
-RUN mkdir /opt/ibc/logs
+RUN mkdir /opt/ibc/logs/
 
 RUN chmod -R u+x runscript.sh \
   && chmod -R 777 /usr/bin/xvfb-daemon-run \
@@ -58,9 +58,5 @@ RUN dos2unix /usr/bin/xvfb-daemon-run \
   && dos2unix /etc/init.d/vnc \
   && dos2unix runscript.sh
 
-# Below files copied during build to enable operation without volume mount
-#COPY ./ib/IBController.ini /root/IBController/IBController.ini
-#RUN chmod u+x /etc/init.d/* \#
-#	#&& chmod u+x /root/*
 
 CMD bash runscript.sh

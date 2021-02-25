@@ -16,7 +16,7 @@ apt-get update
 apt-get -y upgrade
 
 # Install packages without unnecessary recommended packages:
-apt-get install -y --no-install-recommends curl wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common dos2unix python3-pip
+apt-get install -y --no-install-recommends git curl wget unzip xvfb libxtst6 libxrender1 libxi6 x11vnc socat software-properties-common dos2unix python3-pip
 
 # Delete cached files we don't need anymore:
 apt-get clean

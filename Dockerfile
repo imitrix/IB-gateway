@@ -1,26 +1,39 @@
-FROM debian:buster-slim
+FROM ubuntu:20.10
 
 COPY scripts/install-packages.sh .
 RUN chmod -R u+x install-packages.sh
 RUN ./install-packages.sh
 
-# Setup IB TWS
-RUN mkdir -p /opt/TWS
-WORKDIR /opt/TWS
-RUN wget -q http://cdn.quantconnect.com/interactive/ibgateway-latest-standalone-linux-x64-v974.4g.sh
-RUN chmod a+x ibgateway-latest-standalone-linux-x64-v974.4g.sh
+# Set env vars for IBG/IBC
+ENV IBG_VERSION=981-latest \
+IBC_VERSION=3.8.5 \
+IBC_INI=/root/config.ini \
+IBC_PATH=/opt/ibc \
+TWS_PATH=/root/Jts \
+TWS_CONFIG_PATH=/root/Jts \
+LOG_PATH=/opt/ibc/logs
 
-# Setup  IBController
-RUN mkdir -p /opt/IBController/ && mkdir -p /opt/IBController/Logs
-WORKDIR /opt/IBController/
-RUN wget -q http://cdn.quantconnect.com/interactive/IBController-QuantConnect-3.2.0.5.zip
-RUN unzip ./IBController-QuantConnect-3.2.0.5.zip
-RUN chmod -R u+x *.sh && chmod -R u+x Scripts/*.sh
+# Install IBG
+RUN curl --fail --output /tmp/ibgateway-standalone-linux-x64.sh https://s3.amazonaws.com/ib-gateway/ibgateway-${IBG_VERSION}-standalone-linux-x64.sh \
+	&& chmod u+x /tmp/ibgateway-standalone-linux-x64.sh \
+	&& echo 'n' | sh /tmp/ibgateway-standalone-linux-x64.sh \ 
+	&& rm -f /tmp/ibgateway-standalone-linux-x64.sh
 
+# Install IBC
+RUN curl --fail --silent --location --output /tmp/IBC.zip https://github.com/ibcalpha/ibc/releases/download/${IBC_VERSION}/IBCLinux-${IBC_VERSION}.zip \
+	&& unzip /tmp/IBC.zip -d ${IBC_PATH} \
+	&& chmod -R u+x ${IBC_PATH}/*.sh \
+	&& chmod -R u+x ${IBC_PATH}/scripts/*.sh \
+	&& apt-get remove -y unzip \
+	&& rm -f /tmp/IBC.zip
+
+# Install ib_insync
+RUN apt-get install -y git \
+	&& pip install ib_insync \
+	&& pip install psutil \
+	&& apt-get remove -y git
+  
 WORKDIR /
-
-# Install gateway
-RUN yes n | /opt/TWS/ibgateway-latest-standalone-linux-x64-v974.4g.sh
 
 ENV DISPLAY :0
 
@@ -40,7 +53,7 @@ RUN dos2unix /usr/bin/xvfb-daemon-run \
   && dos2unix runscript.sh
 
 # Below files copied during build to enable operation without volume mount
-COPY ./ib/IBController.ini /root/IBController/IBController.ini
-COPY ./ib/jts.ini /root/Jts/jts.ini
+#COPY ./ib/IBController.ini /root/IBController/IBController.ini
+#COPY ./ib/jts.ini /root/Jts/jts.ini
 
 CMD bash runscript.sh

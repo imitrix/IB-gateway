@@ -6,6 +6,6 @@ services:
       - "4003:4003"
       - "5901:5900"
     volumes:
-
+      - /root/:/root/shared
     environment:
       - TZ=America/Chicago

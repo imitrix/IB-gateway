@@ -16,7 +16,7 @@ LOG_PATH=/opt/ibc/logs
 # Install IBG
 RUN curl --fail --output /tmp/ibgateway-standalone-linux-x64.sh https://s3.amazonaws.com/ib-gateway/ibgateway-${IBG_VERSION}-standalone-linux-x64.sh \
 	&& chmod u+x /tmp/ibgateway-standalone-linux-x64.sh \
-	&& echo 'n' | sh /tmp/ibgateway-standalone-linux-x64.sh \ 
+	&& echo '\n' | sh /tmp/ibgateway-standalone-linux-x64.sh \ 
 	&& rm -f /tmp/ibgateway-standalone-linux-x64.sh
 
 # Install IBC
@@ -28,8 +28,7 @@ RUN curl --fail --silent --location --output /tmp/IBC.zip https://github.com/ibc
 	&& rm -f /tmp/IBC.zip
 
 # Install ib_insync
-RUN apt-get install -y git \
-	&& pip install ib_insync \
+RUN pip install ib_insync \
 	&& pip install psutil \
 	&& apt-get remove -y git
   
@@ -42,6 +41,15 @@ ADD ./vnc/vnc_init /etc/init.d/vnc
 ADD ./vnc/xvfb-daemon-run /usr/bin/xvfb-daemon-run
 
 COPY scripts/runscript.sh .
+COPY scripts /root/scripts
+COPY jts.ini /opt/ibc/
+#RUN chmod u+x /etc/init.d/* \#
+#	#&& chmod u+x /root/*
+
+# expose ibg and vnc port
+EXPOSE 4001
+
+
 RUN chmod -R u+x runscript.sh \
   && chmod -R 777 /usr/bin/xvfb-daemon-run \
   && chmod 777 /etc/init.d/xvfb \
